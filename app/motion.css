@@ -1,0 +1,138 @@
+/* Motion stays local to the element; scrolling remains native on every device. */
+:root{
+  --ease-out:cubic-bezier(.22,1,.36,1);
+  --motion-fast:180ms;
+  --motion-normal:280ms;
+}
+html{scrollbar-gutter:stable}
+.event-experience{overflow-x:clip}
+.event-page-main{animation:none}
+.hero-line{animation:headlineRise 560ms var(--ease-out) both}
+.hero-line.line-two{animation-delay:55ms}
+.hero-line.line-three{animation-delay:110ms}
+.chapter-copy,.page-showcase .showcase-top{animation:chapterArrival 380ms var(--ease-out) both}
+.animated-skyline{
+  transform:translate3d(var(--sky-x,0px),var(--sky-y,0px),0);
+  transition:none;
+  animation:artArrival 650ms ease-out both;
+}
+.reveal-observed{
+  opacity:0;
+  transform:translate3d(0,14px,0);
+  transition:opacity 380ms ease-out var(--reveal-delay,0ms),transform 480ms var(--ease-out) var(--reveal-delay,0ms);
+}
+.reveal-observed.is-visible{opacity:1;transform:none}
+.reveal-observed:focus-within{opacity:1;transform:none;transition-delay:0ms}
+.signal-track{will-change:auto;animation-duration:48s}
+.sky-point{animation:pointPulse 3.5s ease-out infinite}
+.signal-ribbon:focus-within .signal-track{animation-play-state:paused}
+[data-motion-visible="false"],[data-motion-visible="false"] *,
+.event-experience[data-page-inactive="true"] *,
+.event-experience[data-page-inactive="true"] *::before,
+.event-experience[data-page-inactive="true"] *::after{animation-play-state:paused!important}
+
+.button,.icon-btn,.tabs button,.saved-toggle,.save-session,.exhibit-zone{
+  transition:background-color var(--motion-fast) ease,color var(--motion-fast) ease,border-color var(--motion-fast) ease,transform var(--motion-normal) var(--ease-out);
+}
+.button>svg,.text-link>svg,.path-top>svg,.coda-link>svg{
+  transition:transform var(--motion-normal) var(--ease-out);
+}
+.text-link:is(:hover,:focus-visible)>svg,.button:is(:hover,:focus-visible)>svg{transform:translate(2px,-2px)}
+.button:active{transform:translateY(0) scale(.985)}
+.exhibit-zone{transition-property:background-color,color,box-shadow,padding-left}
+.zone-detail{animation:chapterArrival 260ms var(--ease-out) both;min-height:510px}
+.session-description,.faq details>p{animation:disclosureArrival 220ms ease-out}
+.session-details summary,.faq summary{touch-action:manipulation}
+
+/* Native details keep keyboard and no-JavaScript support. Newer engines also
+   interpolate the content height in both directions. */
+@supports (interpolate-size:allow-keywords){
+  .session-details,.faq details{interpolate-size:allow-keywords}
+  .session-details::details-content,.faq details::details-content{
+    block-size:0;
+    opacity:0;
+    overflow:clip;
+    transition:block-size var(--motion-normal) var(--ease-out),opacity var(--motion-fast) ease,content-visibility var(--motion-normal);
+    transition-behavior:allow-discrete;
+  }
+  .session-details[open]::details-content,.faq details[open]::details-content{block-size:auto;opacity:1}
+  .session-description,.faq details>p{animation:none}
+}
+
+.modal{overscroll-behavior:contain;scrollbar-gutter:stable;animation:dialogArrival 240ms var(--ease-out) both}
+.modal::backdrop{animation:backdropArrival 200ms ease-out both}
+.modal.is-closing{animation:dialogDeparture 180ms ease-in both;pointer-events:none}
+.modal.is-closing::backdrop{animation:backdropDeparture 180ms ease-in both}
+.modal .close{min-width:44px;min-height:44px}
+.form input,.form select,.form textarea{transition:border-color var(--motion-fast),background-color var(--motion-fast)}
+.nav-backdrop{display:none}
+
+@media(hover:hover) and (pointer:fine){
+  .button:hover{transform:translateY(-2px)}
+}
+@media(hover:none){
+  .button:hover{transform:none}
+  .sky-scan{display:none}
+  .sky-point{animation:none}
+}
+@media(max-width:1000px){
+  .site-header{z-index:40}
+  .event-experience .nav,.event-experience .nav.open{
+    display:flex;
+    top:100%;
+    max-height:calc(100svh - 125px);
+    max-height:calc(100dvh - 125px);
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+  }
+  .event-experience .nav{
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transform:translate3d(0,-8px,0);
+    transition:opacity var(--motion-fast) ease,transform 240ms var(--ease-out),visibility 0s linear 240ms;
+  }
+  .event-experience .nav.open{opacity:1;visibility:visible;pointer-events:auto;transform:none;transition-delay:0s}
+  .nav-backdrop{
+    display:block;
+    position:fixed;
+    inset:0;
+    z-index:30;
+    background:#15151538;
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transition:opacity 220ms ease,visibility 0s linear 220ms;
+  }
+  .nav-backdrop.is-open{opacity:1;visibility:visible;pointer-events:auto;transition-delay:0s}
+}
+@media(max-width:600px){
+  .site-header,.mobile-attend-bar{backdrop-filter:none;background:rgba(250,249,245,.98)}
+  .hero-line{animation-duration:450ms}
+  .reveal-observed{transform:translate3d(0,10px,0);transition-duration:300ms,380ms}
+  .reveal-observed.is-visible{transform:none}
+  .zone-detail{min-height:450px}
+  .mobile-attend-bar{transition:opacity var(--motion-fast),transform var(--motion-normal) var(--ease-out),visibility var(--motion-fast)}
+  .nav-backdrop.is-open~.mobile-attend-bar{visibility:hidden;opacity:0;transform:translateY(10px)}
+  .modal{max-height:calc(100dvh - 32px)}
+  .modal::backdrop{backdrop-filter:none}
+  .modal input,.modal select,.modal textarea{font-size:16px}
+}
+
+@keyframes headlineRise{from{opacity:0;transform:translate3d(0,18px,0)}to{opacity:1;transform:none}}
+@keyframes artArrival{from{opacity:0}to{opacity:1}}
+@keyframes chapterArrival{from{opacity:0;transform:translate3d(0,8px,0)}to{opacity:1;transform:none}}
+@keyframes pointPulse{0%,100%{opacity:.5;transform:scale(.85)}50%{opacity:1;transform:scale(1.3)}}
+@keyframes disclosureArrival{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+@keyframes dialogArrival{from{opacity:0;transform:translate3d(0,12px,0) scale(.99)}to{opacity:1;transform:none}}
+@keyframes dialogDeparture{from{opacity:1;transform:none}to{opacity:0;transform:translate3d(0,8px,0) scale(.99)}}
+@keyframes backdropArrival{from{opacity:0}to{opacity:1}}
+@keyframes backdropDeparture{from{opacity:1}to{opacity:0}}
+
+html.motion-paused .chapter-copy,html.motion-paused .showcase-top{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .chapter-copy,.showcase-top{animation:none;opacity:1;transform:none}
+  .modal,.modal::backdrop,.modal.is-closing,.modal.is-closing::backdrop{animation:none;transition:none}
+}
